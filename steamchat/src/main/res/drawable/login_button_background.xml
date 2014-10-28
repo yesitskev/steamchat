@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Pressed button -->
+    <item android:state_pressed="true" >
+        <shape
+            android:shape="rectangle">
+
+            <!-- Background color -->
+            <solid android:color="#22FFFFFF"/>
+
+            <!-- Border width and color -->
+            <stroke android:width="2dp"
+                android:color="@color/steam_list_friend_online"/>
+
+            <!-- Rounded corners -->
+            <corners android:radius="3dp"/>
+        </shape>
+    </item>
+
+    <!-- Idle button -->
+    <item >
+        <shape
+            android:shape="rectangle">
+
+            <!-- Background color -->
+            <solid android:color="@android:color/transparent"/>
+
+            <!-- Border width and color -->
+            <stroke android:width="2dp"
+                android:color="@color/steam_list_friend_online"/>
+
+            <!-- Rounded corners -->
+            <corners android:radius="3dp"/>
+        </shape>
+    </item>
+
+</selector>

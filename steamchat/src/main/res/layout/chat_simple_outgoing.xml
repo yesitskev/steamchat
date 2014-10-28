@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:background="@drawable/selector_outgoing_text"
+        android:paddingLeft="8dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:paddingRight="18dp"
+        android:layout_marginLeft="40dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@android:id/text1"
+            android:gravity="left"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:text="Here is a simple message. this is what happens if there are lots of messaes in cool"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:id="@android:id/text2"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:layout_gravity="right|bottom" />
+    </LinearLayout>
+
+</FrameLayout>

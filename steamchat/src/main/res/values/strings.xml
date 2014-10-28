@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Steam Chat</string>
+
+    <!-- Steam persona states -->
+    <string name="friends_list_persona_online">Online</string>
+    <string name="friends_list_persona_looking_to_play">Looking to play</string>
+    <string name="friends_list_persona_looking_to_trade">Looking to trade</string>
+    <string name="friends_list_persona_busy">Busy</string>
+    <string name="friends_list_persona_away">Away</string>
+    <string name="friends_list_persona_snooze">Snooze</string>
+    <string name="friends_list_persona_offline">Last Online: %s</string>
+
+    <!-- Steam login -->
+    <string name="login_username">username</string>
+    <string name="login_password">password</string>
+    <string name="login_button">login</string>
+    <string name="login_guard_text">As an added account security measure\, you\'ll need to grant access to this device by entering the special code we\'ve just sent to your email address at \%s.</string>
+    <string name="login_guard">enter your code here</string>
+    <string name="login_machine_text">Please enter the name you would like to use to identify this machine</string>
+    <string name="login_machine">device name</string>
+</resources>

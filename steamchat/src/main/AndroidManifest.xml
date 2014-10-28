@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kevelbreh.steamchat" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Application permissions for account operations -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+
+    <application
+        android:name="com.kevelbreh.steamchat.SteamChat"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme" >
+
+        <activity
+            android:name="com.kevelbreh.steamchat.activity.LauncherActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.kevelbreh.steamchat.activity.AuthenticationActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name="com.kevelbreh.steamchat.activity.FriendsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".activity.ConversationActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".activity.ChatsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="Chats" />
+
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="Settings" />
+
+        <service
+            android:name=".steam2.SteamService"
+            android:label="Steam Chat"
+            android:process=":SteamService"/>
+
+        <!-- Authenticator service -->
+        <service
+            android:name="com.kevelbreh.steamchat.account.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <!-- Content Provider -->
+        <provider
+            android:name="com.kevelbreh.steamchat.provider.SteamProvider"
+            android:authorities="com.kevelbreh.steamchat.provider"
+            android:enabled="true"
+            android:multiprocess="true"
+            android:exported="false"
+            android:syncable="false"/>
+    </application>
+
+</manifest>
