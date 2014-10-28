@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="68dp">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/friendslist_avatar_background_offline"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="2dp"
+        android:id="@+id/icon_wrapper"
+        android:layout_margin="8dp">
+
+        <com.kevelbreh.steamchat.widget.view.AvatarView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@android:id/icon"
+            android:src="@drawable/ic_list_avatar"
+             />
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="personaname"
+        android:id="@android:id/text1"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/icon_wrapper"
+        android:textSize="17dp"
+        android:textColor="@color/steam_list_friend_offline"
+        android:layout_marginTop="14dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@android:id/content"
+        android:layout_below="@android:id/text1"
+        android:layout_toRightOf="@+id/icon_wrapper"/>
+
+</RelativeLayout>

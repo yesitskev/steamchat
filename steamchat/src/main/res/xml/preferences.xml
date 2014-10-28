@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- titles and subtitles need to be set as strings.xml values -->
+    <PreferenceCategory android:title="Friends">
+
+        <!-- Give the user the option to hide their offline contacts -->
+        <CheckBoxPreference
+            android:title="Hide Offline"
+            android:summary="Hides all your offline steam friends."
+            android:key="pref_friends_hide_offline"
+            android:defaultValue="false"/>
+
+        <!-- Give the user the option to hide avatars -->
+        <CheckBoxPreference
+            android:title="Hide Avatars"
+            android:summary="Hides your friends avatar."
+            android:key="pref_friends_hide_avatar"
+            android:defaultValue="false"/>
+
+        <!-- Give the user the option to hide avatars -->
+        <CheckBoxPreference
+            android:title="Sort by Name"
+            android:summary="Sort your friends by their name."
+            android:key="pref_friends_sort_by_name"
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+
+    <!-- titles and subtitles need to be set as strings.xml values -->
+    <PreferenceCategory android:title="Notifications">
+
+        <!-- Give the user the option to hide their offline contacts -->
+        <SwitchPreference
+            android:title="Vibrate"
+            android:summary="Vibrate when a message is received."
+            android:key="pref_friends_hide_notification_vibrate"
+            android:defaultValue="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
