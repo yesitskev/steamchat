@@ -7,7 +7,7 @@
     android:padding="10dp">
 
     <LinearLayout
-        android:id="@+id/credentials_layout"
+        android:id="@+id/credentials_container"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -32,10 +32,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/guard_layout"
+        android:id="@+id/guard_container"
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
