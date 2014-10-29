@@ -57,8 +57,9 @@ public class UserHandler {
 
         // If there is null data and there is no account, open up the authentication activity so that the
         // user can try log in.
-        if (service.getSteamAccount().getData() == null && !service.getSteamAccount().hasAccount()) {
-			SteamChat.debug("directing logging in to authentication activity.");
+        SteamAccount account = service.getSteamAccount();
+        if (account.getData() == null && !account.hasAccount()) {
+            SteamChat.debug("directing logging in to authentication activity.");
             Intent intent = new Intent(service, AuthenticationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             service.startActivity(intent);
@@ -68,11 +69,11 @@ public class UserHandler {
 
         // If the user has an account then start logging in the user with the credentials saved within
         // the found account.
-        // todo: Set the username and password found in the account or something.
-        if (service.getSteamAccount().hasAccount()) {
-			SteamChat.debug("Logging in using account");
-            request.getBody().setAccountName("");
-            request.getBody().setPassword("");
+        // todo: Set the username and password found in the account or something
+        if (account.hasAccount()) {
+            SteamChat.debug("Logging in using account");
+            request.getBody().setAccountName(account.getExtra("username"));
+            request.getBody().setPassword(account.getExtra("password"));
             //packet.getBody().setLoginKey(account.getExtra("login_key"));
             request.getBody().setEresultSentryfile(Language.Result.OK);
             request.getBody().setShaSentryfile(getSentryHash(service, service.getSteamAccount().getExtra("sentry")));
@@ -81,7 +82,7 @@ public class UserHandler {
         // Else if there is no account found but there is at least temp data set; attempt to then log
         // in the user for the first time using the temp data.
         else {
-			SteamChat.debug("Logging in using temp data from authentication");
+            SteamChat.debug("Logging in using temp data from authentication");
             final Bundle temp = service.getSteamAccount().getData();
             request.getBody().setAccountName(temp.getString("username"));
             request.getBody().setPassword(temp.getString("password"));
@@ -91,8 +92,8 @@ public class UserHandler {
                 request.getBody().setAuthCode(guard);
                 request.getBody().setMachineName(machine);
             }
-			request.getBody().clearShaSentryfile();
-			request.getBody().setEresultSentryfile(Language.Result.FILE_NOT_FOUND);
+            request.getBody().clearShaSentryfile();
+            request.getBody().setEresultSentryfile(Language.Result.FILE_NOT_FOUND);
         }
 
         request.setSessionId(0);
@@ -119,7 +120,7 @@ public class UserHandler {
             if (response.getBody().getEresult() == Language.Result.OK) {
                 final long steam_id = response.getHeader().getSteamid();
                 final int session_id = response.getHeader().getClientSessionid();
-				final int heartbeat_interval = response.getBody().getOutOfGameHeartbeatSeconds();
+                final int heartbeat_interval = response.getBody().getOutOfGameHeartbeatSeconds();
                 service.getSteamConnection().setSteamId(steam_id);
                 service.getSteamConnection().setSessionId(session_id);
                 service.getSteamConnection().startHeartbeat(heartbeat_interval);
@@ -133,16 +134,16 @@ public class UserHandler {
                 }
             } else {
                 service.getSteamConnection().close();
-				SteamAccount.delete(service);
-				SteamChat.debug("E-RESULT LOGIN: " + response.getBody().getEresult());
+                SteamAccount.delete(service);
+                SteamChat.debug("E-RESULT LOGIN: " + response.getBody().getEresult());
             }
 
-			// Send a new intent to the authenticator activity with a result from the login. This will get
+            // Send a new intent to the authenticator activity with a result from the login. This will get
             // skipped if the user previously had a steam account.
-			Intent intent = new Intent(service, AuthenticationActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra("result", response.getBody().getEresult());
-			service.startActivity(intent);
+            Intent intent = new Intent(service, AuthenticationActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("result", response.getBody().getEresult());
+            service.startActivity(intent);
         }
         catch(final IOException e) {
             SteamChat.debug("onClientLogOnResponse", e.getMessage(), e);
@@ -154,7 +155,7 @@ public class UserHandler {
     public static void onClientLoggedOff(SteamService service, final byte[] data) {
         SteamChat.debug("onClientLoggedOff");
         service.getSteamConnection().close();
-		SteamAccount.delete(service);
+        SteamAccount.delete(service);
     }
 
     @SuppressWarnings("unused")
@@ -175,7 +176,7 @@ public class UserHandler {
             final byte[] sentry = request.getBody().getBytes().toByteArray();
             final byte[] hash = Cryptography.SHAHash(sentry);
 
-			service.getSteamAccount().setExtra("sentry", filename);
+            service.getSteamAccount().setExtra("sentry", filename);
             setSentryFile(service, filename, sentry);
 
             response.setTargetJobId(request.getHeader().getJobidSource());
@@ -203,26 +204,26 @@ public class UserHandler {
 
     @SteamEventBus.SteamEvent(event = Language.Message.CLIENT_NEW_LOGIN_KEY)
     public static void onClientNewLoginKey(SteamService service, final byte[] data) {
-		ProtoPacket<CMsgClientNewLoginKey.Builder> request =
-				new ProtoPacket<CMsgClientNewLoginKey.Builder>(CMsgClientNewLoginKey.class);
+        ProtoPacket<CMsgClientNewLoginKey.Builder> request =
+                new ProtoPacket<CMsgClientNewLoginKey.Builder>(CMsgClientNewLoginKey.class);
 
-		ProtoPacket<CMsgClientNewLoginKeyAccepted.Builder> response =
-				new ProtoPacket<CMsgClientNewLoginKeyAccepted.Builder>(CMsgClientNewLoginKeyAccepted.class,
-						Language.Message.CLIENT_NEW_LOGIN_KEY_ACCEPTED);
-		try {
-			request.setData(data);
-			request.deserialize();
+        ProtoPacket<CMsgClientNewLoginKeyAccepted.Builder> response =
+                new ProtoPacket<CMsgClientNewLoginKeyAccepted.Builder>(CMsgClientNewLoginKeyAccepted.class,
+                        Language.Message.CLIENT_NEW_LOGIN_KEY_ACCEPTED);
+        try {
+            request.setData(data);
+            request.deserialize();
 
-			final String token = request.getBody().getLoginKey();
-			response.setTargetJobId(request.getSourceJobId());
-			response.getBody().setUniqueId(request.getBody().getUniqueId());
-			service.getSteamConnection().send(response);
-		}
-		catch(final IOException e) {
-			// Failed to accept a new login key for the user.  Next time the user the TCP connections tries to
-			// connect it would most likely fail and request the user to use their username and password.
-			SteamChat.debug("onClientNewLoginKey", e.getMessage(), e);
-		}
+            final String token = request.getBody().getLoginKey();
+            response.setTargetJobId(request.getSourceJobId());
+            response.getBody().setUniqueId(request.getBody().getUniqueId());
+            service.getSteamConnection().send(response);
+        }
+        catch(final IOException e) {
+            // Failed to accept a new login key for the user.  Next time the user the TCP connections tries to
+            // connect it would most likely fail and request the user to use their username and password.
+            SteamChat.debug("onClientNewLoginKey", e.getMessage(), e);
+        }
     }
 
     @SteamEventBus.SteamEvent(event = Language.Message.CLIENT_ACCOUNT_INFO)
