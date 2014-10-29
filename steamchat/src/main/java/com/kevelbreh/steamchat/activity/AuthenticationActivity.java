@@ -20,15 +20,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevelbreh.steamchat.R;
@@ -38,12 +38,21 @@ import com.kevelbreh.steamchat.steam2.SteamService;
 
 import org.apache.commons.lang.StringUtils;
 
-/**
- *
- */
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
+
 public class AuthenticationActivity extends Activity {
 
     private boolean guarded = false;
+
+    @InjectView(R.id.credentials_container) ViewGroup mCredentialsContainer;
+    @InjectView(R.id.guard_container) ViewGroup mGuardContainer;
+    @InjectView(R.id.authenticate) Button mAuthenticate;
+    @InjectView(R.id.username) EditText mUsername;
+    @InjectView(R.id.password) EditText mPassword;
+    @InjectView(R.id.guard) EditText mGuard;
+    @InjectView(R.id.machine) EditText mMachine;
 
     /**
      * Service connection which connects to {@link com.kevelbreh.steamchat.steam.SteamService} for
@@ -67,10 +76,10 @@ public class AuthenticationActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_login);
-
+        setContentView(R.layout.activity_login_2);
+        ButterKnife.inject(this);
         bindService(new Intent(this, SteamService.class), mConnection, Context.BIND_AUTO_CREATE);
-        findViewById(R.id.authenticate).setOnClickListener(new View.OnClickListener() {
+        mAuthenticate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 authenticate();
@@ -81,27 +90,29 @@ public class AuthenticationActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
-        handleIntent(intent);
-    }
 
-    /**
-     *
-     * @param intent
-     */
-    private void handleIntent(Intent intent) {
         switch (intent.getIntExtra("result", -500)) {
-
+            // Login was successful!
             case Language.Result.OK:
                 finish();
                 break;
-
+            // Steam requires the user to provide the Steam Guard code emailed to their email address
+            // registered on Steam.
             case Language.Result.ACCOUNT_LOGON_DENIED:
                 setupGuardState();
                 break;
-
+            // Some other error occurred.  Display this to the user for their viewing. Possibly reset
+            // the login screen.
             default:
+                setupNormalState();
                 Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbindService(mConnection);
     }
 
     /**
@@ -133,14 +144,12 @@ public class AuthenticationActivity extends Activity {
             @Override
             public void run() {
                 guarded = true;
-                findViewById(R.id.guard_layout).setVisibility(View.VISIBLE);
-                findViewById(R.id.credentials_layout).setVisibility(View.GONE);
+                mGuardContainer.setVisibility(View.VISIBLE);
+                mCredentialsContainer.setVisibility(View.GONE);
 
-                TextView mTextView = (TextView) findViewById(R.id.machine);
-                final String machine = StringUtils.isEmpty(android.os.Build.MODEL)
-                        ? "SteamChat"
-                        : "SteamChat:" + android.os.Build.MODEL;
-                mTextView.setText(machine);
+                if (StringUtils.isEmpty(android.os.Build.MODEL) && android.os.Build.MODEL.length() >= 6) {
+                    mMachine.setText(android.os.Build.MODEL);
+                }
             }
         });
     }
@@ -153,8 +162,9 @@ public class AuthenticationActivity extends Activity {
             @Override
             public void run() {
                 guarded = false;
-                findViewById(R.id.guard_layout).setVisibility(View.GONE);
-                ((EditText) findViewById(R.id.password)).setText("");
+                mCredentialsContainer.setVisibility(View.VISIBLE);
+                mGuardContainer.setVisibility(View.GONE);
+                mPassword.setText(null);
             }
         });
     }
@@ -163,71 +173,68 @@ public class AuthenticationActivity extends Activity {
      * @return whether the form is valid or not.
      */
     private boolean isValid() {
-        EditText mUsername = ((EditText) findViewById(R.id.username));
-        EditText mPassword = ((EditText) findViewById(R.id.password));
-        EditText mGuard = ((EditText) findViewById(R.id.guard));
-        EditText mMachine = ((EditText) findViewById(R.id.machine));
+        boolean hasError = false;
 
         if (mUsername.getText().length() == 0) {
             mUsername.setError("Enter your username.");
-            mUsername.requestFocus();
-            return false;
+            hasError = true;
         }
 
         if (mPassword.getText().length() == 0) {
             mPassword.setError("Enter your password.");
-            mPassword.requestFocus();
-            return false;
+            hasError = true;
         }
 
         if (guarded && mGuard.getText().length() == 0) {
             mGuard.setError("Enter the Steam Guard code that has been sent to your email.");
-            mGuard.requestFocus();
-            return false;
+            hasError = true;
+        }
+
+        if (guarded && mGuard.getText().length() != 5) {
+            mGuard.setError("The Steam Guard code sent to you can only be 5 characters in length.");
+            hasError = true;
         }
 
         if (guarded && mMachine.getText().length() == 0) {
             mGuard.setError("Enter a name to identify this connecting machine.");
-            mGuard.requestFocus();
-            return false;
+            hasError = true;
         }
 
-        return true;
+        if (guarded && mMachine.getText().length() < 6) {
+            mGuard.setError("The machine name needs to be longer than 6 characters.");
+            hasError = true;
+        }
+
+        return hasError;
     }
 
     /**
      * @return the entered username
      */
     private String getUsername() {
-        return ((EditText) findViewById(R.id.username)).getText().toString();
+        return mUsername.getText().toString();
     }
 
     /**
      * @return the entered password
      */
     private String getPassword() {
-        return ((EditText) findViewById(R.id.password)).getText().toString();
+        return mPassword.getText().toString();
     }
 
     /**
-     * @return the entered steam guard code
+     * @return the entered steam guard code or null.
      */
     private String getGuard() {
-        final String temp = ((EditText) findViewById(R.id.guard)).getText().toString();
+        final String temp = mGuard.getText().toString();
         return StringUtils.isEmpty(temp) ? null : temp;
     }
 
     /**
-     * @return the entered users machine name.
+     * @return the entered users machine name or null.
      */
     private String getMachine() {
-        final String temp = ((EditText) findViewById(R.id.machine)).getText().toString();
+        final String temp = mMachine.getText().toString();
         return StringUtils.isEmpty(temp) ? null : temp;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unbindService(mConnection);
     }
 }
