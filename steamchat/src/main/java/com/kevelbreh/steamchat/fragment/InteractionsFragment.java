@@ -1,14 +1,12 @@
 package com.kevelbreh.steamchat.fragment;
 
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.content.ContentUris;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,17 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.kevelbreh.steamchat.R;
-import com.kevelbreh.steamchat.activity.ConversationActivity;
 import com.kevelbreh.steamchat.activity.FriendsActivity;
 import com.kevelbreh.steamchat.activity.SettingsActivity;
 import com.kevelbreh.steamchat.provider.SteamProvider;
 import com.kevelbreh.steamchat.widget.adapter.ChatAdapter;
-import com.kevelbreh.steamchat.widget.adapter.FriendAdapter;
 
 /**
- * Chats fragment displays a list of all the chats in progress with steam friends.
+ * Fragment containing a list of user interactions.
  */
-public class ChatsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class InteractionsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ChatAdapter mAdapter;
 
@@ -98,7 +94,7 @@ public class ChatsFragment extends ListFragment implements LoaderManager.LoaderC
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        // todo: v-- Remove this and it without this hac --v
+        /** todo: v-- Remove this and it without this hac --v
         Cursor cursor = getActivity().getContentResolver().query(
                 ContentUris.withAppendedId(SteamProvider.Interaction.CONTENT_URI, id),
                 null,
@@ -109,11 +105,11 @@ public class ChatsFragment extends ListFragment implements LoaderManager.LoaderC
         cursor.moveToFirst();
         final int user_id = cursor.getInt(cursor.getColumnIndex(SteamProvider.Interaction.USER));
         final Uri user_uri = ContentUris.withAppendedId(SteamProvider.User.CONTENT_URI, user_id);
-        // todo: ^-- Remove this and it without this hack --^
+
 
         final Intent intent = new Intent(getActivity(), ConversationActivity.class);
         intent.setData(user_uri);
         intent.setAction(Intent.ACTION_VIEW);
-        startActivity(intent);
+        startActivity(intent);**/
     }
 }

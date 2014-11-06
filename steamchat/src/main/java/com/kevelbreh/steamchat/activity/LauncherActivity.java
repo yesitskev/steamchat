@@ -16,18 +16,11 @@ package com.kevelbreh.steamchat.activity;
 
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Messenger;
 
 import com.kevelbreh.steamchat.account.SteamAccount;
-import com.kevelbreh.steamchat.steam.SteamServiceHandler;
 import com.kevelbreh.steamchat.steam2.SteamService;
-import com.kevelbreh.steamchat.util.AServiceActivity;
 
 /**
  * Launcher activity is responsible for making sure that the user is logged in and authenticated
@@ -60,7 +53,7 @@ public class LauncherActivity extends Activity {
          */
 		SteamAccount account = new SteamAccount(this);
 		if (account.hasAccount()) {
-			startActivity(new Intent(this, ChatsActivity.class));
+			startActivity(new Intent(this, InteractionsActivity.class));
 			finish();
 		} else {
 			startActivity(new Intent(this, AuthenticationActivity.class));
