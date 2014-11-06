@@ -40,8 +40,15 @@ import org.apache.commons.lang.StringUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
-
+/**
+ * Authenticate a user to the steam network.  This activity is responsible for logging in the user
+ * using a username and password.  If this is a first time login using this device, steam guard will
+ * probably want the user to authenticate the device also.
+ *
+ * TODO: Add spinner when performing a network operation (logging in attempts).
+ */
 public class AuthenticationActivity extends Activity {
 
     private boolean guarded = false;
@@ -119,7 +126,8 @@ public class AuthenticationActivity extends Activity {
      * Authenticate the user.  Perform actions depending on the required form state and result code
      * of the Steam API.
      */
-    private void authenticate() {
+    @OnClick(R.id.authenticate)
+    public void authenticate() {
         if (isValid()) try {
             Bundle data = new Bundle();
             data.putString("username", getUsername());
@@ -196,16 +204,16 @@ public class AuthenticationActivity extends Activity {
         }
 
         if (guarded && mMachine.getText().length() == 0) {
-            mGuard.setError("Enter a name to identify this connecting machine.");
+            mMachine.setError("Enter a name to identify this connecting machine.");
             hasError = true;
         }
 
         if (guarded && mMachine.getText().length() < 6) {
-            mGuard.setError("The machine name needs to be longer than 6 characters.");
+            mMachine.setError("The machine name needs to be longer than 6 characters.");
             hasError = true;
         }
 
-        return hasError;
+        return !hasError;
     }
 
     /**
