@@ -101,6 +101,7 @@ public class AuthenticationActivity extends Activity {
         switch (intent.getIntExtra("result", -500)) {
             // Login was successful!
             case Language.Result.OK:
+                startActivity(new Intent(this, ChatsActivity.class));
                 finish();
                 break;
             // Steam requires the user to provide the Steam Guard code emailed to their email address
