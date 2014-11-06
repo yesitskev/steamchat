@@ -30,3 +30,5 @@ proguard/
 # idea IDE
 .idea/
 
+*.iml
+steamchat/steamchat-steamchat.iml
