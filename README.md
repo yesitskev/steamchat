@@ -18,6 +18,11 @@ Protobuf object should be generated using [Wire] because google's generation is 
 At the moment [Android Universal Image Loader] is being used for image caching.  Investation and possible implementation should be done for [Picasso].
 
 
+Screenshots (before Android 5)
+--------------
+![Conversations](screenshot1.png?raw=true "Conversations")
+![Single Chat](screenshot2.png?raw=true "Single Chat")
+
 Contact
 --------------
 
