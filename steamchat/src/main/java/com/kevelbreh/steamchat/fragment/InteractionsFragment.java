@@ -31,7 +31,6 @@ public class InteractionsFragment extends ListFragment implements LoaderManager.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setHasOptionsMenu(true);
     }
 
@@ -51,7 +50,7 @@ public class InteractionsFragment extends ListFragment implements LoaderManager.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.chats_menu, menu);
+        inflater.inflate(R.menu.interactions_menu, menu);
     }
 
     @Override
