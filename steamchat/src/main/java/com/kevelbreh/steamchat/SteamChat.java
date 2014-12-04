@@ -17,10 +17,6 @@ package com.kevelbreh.steamchat;
 import android.app.Application;
 import android.util.Log;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 public class SteamChat extends Application {
 
     private static final String TAG = "SteamChat";
@@ -28,22 +24,6 @@ public class SteamChat extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Create default options which will be used for every
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-            .showImageForEmptyUri(R.drawable.ic_list_avatar)
-            .showImageOnLoading(R.drawable.ic_list_avatar)
-            .showImageOnFail(R.drawable.ic_list_avatar)
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .build();
-
-        // Create global configuration and initialize ImageLoader with this configuration
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-            .defaultDisplayImageOptions(defaultOptions)
-            .build();
-
-        ImageLoader.getInstance().init(config);
     }
 
     /**
